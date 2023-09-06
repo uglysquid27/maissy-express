@@ -1,0 +1,70 @@
+{
+  "development": {
+    "username": "iot_prod",
+    "password": "123456",
+    "database": "scada_alarm",
+    "host": "192.168.9.47",
+    "dialect": "mysql",
+    "timezone": "+07:00"
+  },
+  "login": {
+    "username": "iot_prod",
+    "password": "123456",
+    "database": "aio_employee",
+    "host": "192.168.9.47",
+    "port": "3306",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "iot_prod",
+    "password": "123456",
+    "database": "scada_alarm",
+    "host": "192.168.9.47",
+    "dialect": "mysql",
+    "timezone": "+07:00"
+  },
+  "production": {
+    "username": "iot_prod",
+    "password": "123456",
+    "database": "scada_alarm",
+    "host": "192.168.9.47",
+    "dialect": "mysql",
+    "timezone": "+07:00"
+  },
+  "duasatuempat": {
+    "username": "intern",
+    "password": "intern",
+    "database": "sms",
+    "host": "192.168.9.47",
+    "port": "3306",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "multipleStatements": true
+    },
+    "timezone": "+07:00"
+  },
+  "empattujuh": {
+    "username": "intern",
+    "password": "intern",
+    "database": "plan_pdm",
+    "host": "192.168.9.47",
+    "port": "3306",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "multipleStatements": true
+    },
+    "timezone": "+07:00"
+  },
+  "kluber": {
+    "username": "intern",
+    "password": "intern",
+    "database": "kluber_lubrication",
+    "host": "192.168.9.47",
+    "port": "3306",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "multipleStatements": true
+    },
+    "timezone": "+07:00"
+  }
+}
