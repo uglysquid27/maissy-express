@@ -3,9 +3,9 @@ const Sequelize = require('sequelize');
 
 exports.read = async (req, res) => {
     try {
-        const get = await config.connect1.query(`SELECT k.kategori,l.level,a.id, a.finding, a.status AS status1, b.no_wo, c.status AS status2, a.id_area FROM tr_temuan_h a JOIN mst_kategori k ON k.id = a.kategori JOIN mst_level l ON l.id = a.level JOIN mst_order b ON a.id = b.id_temuan JOIN tr_wo_sap c ON b.no_wo=c.order WHERE a.tanggal_temuan BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND CURRENT_TIMESTAMP
+        const get = await config.connect1.query(`SELECT DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, month(a.tanggal_temuan) as bulan, k.kategori,l.level,a.id, a.finding, a.status AS status1, b.no_wo, c.status AS status2, a.id_area FROM tr_temuan_h a JOIN mst_kategori k ON k.id = a.kategori JOIN mst_level l ON l.id = a.level JOIN mst_order b ON a.id = b.id_temuan JOIN tr_wo_sap c ON b.no_wo=c.order WHERE a.tanggal_temuan BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND CURRENT_TIMESTAMP
         UNION ALL
-        SELECT k.kategori,l.level,a.id, a.finding, a.status AS status1, null, null, a.id_area FROM tr_temuan_h a JOIN mst_kategori k ON k.id = a.kategori JOIN mst_level l ON l.id = a.level WHERE a.id not IN (select id_temuan FROM mst_order) and a.tanggal_temuan BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND CURRENT_TIMESTAMP`, {
+        SELECT  DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, month(a.tanggal_temuan), k.kategori,l.level,a.id, a.finding, a.status AS status1, null, null, a.id_area FROM tr_temuan_h a JOIN mst_kategori k ON k.id = a.kategori JOIN mst_level l ON l.id = a.level WHERE a.id not IN (select id_temuan FROM mst_order) and a.tanggal_temuan BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND CURRENT_TIMESTAMP`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
@@ -568,7 +568,7 @@ exports.totaldatapost = async (req, res) => {
     const { tgl1, tgl2 } = req.body;
     let get = []
     try {
-        get = await config.connect1.query("SELECT DATE_FORMAT(tr.basic_finish_date,'%M') AS bulan,tr.basic_finish_date,tr.teco_date,tr.order_type, tr.plant_section FROM tr_wo_sap tr WHERE tr.basic_finish_date BETWEEN '" + tgl1 + "' AND '" + tgl2 + "'", {
+        get = await config.connect1.query("SELECT DATE_FORMAT(tr.basic_finish_date,'%M') AS bulan, tr.description,tr.basic_finish_date,tr.teco_date,tr.order_type, tr.plant_section FROM tr_wo_sap tr WHERE tr.basic_finish_date BETWEEN '" + tgl1 + "' AND '" + tgl2 + "'", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
@@ -584,14 +584,14 @@ exports.totaldatapost = async (req, res) => {
 exports.totalfeeding = async (req, res) => {
     try {
         const get = await config.connect1.query(
-            `SELECT l.level,a.id, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun, MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, b.status_pengerjaan AS status_pengerjaan, b.no_wo, c.status AS status2, a.id_area AS id_area 
+            `SELECT l.level,a.id, DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun, MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, b.status_pengerjaan AS status_pengerjaan, b.no_wo, c.status AS status2, a.id_area AS id_area 
             FROM tr_temuan_h a 
             JOIN mst_level l ON l.id = a.level 
             JOIN mst_order b ON a.id = b.id_temuan 
             JOIN tr_wo_sap c ON b.no_wo=c.order
             WHERE YEAR(tanggal_temuan) = YEAR(NOW()) 
                     UNION ALL
-                    SELECT l.level,a.id, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun,MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, NULL AS status_pengerjaan, null, null, a.id_area AS id_area 
+                    SELECT l.level,a.id,  DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun,MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, NULL AS status_pengerjaan, null, null, a.id_area AS id_area 
                             FROM tr_temuan_h a
                             JOIN mst_level l ON l.id = a.level 
                             WHERE YEAR(tanggal_temuan) = YEAR(NOW()) ORDER BY id_area, tanggal_temuan DESC`, {
