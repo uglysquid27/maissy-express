@@ -76,6 +76,9 @@ router.get('/totalfeeding', amDashboardController.totalfeeding);
 router.get('/totalapproval', amDashboardController.totalapproval);
 router.post('/totalapprovalorderfinish', amDashboardController.totalapprovalorderfinish);
 router.post('/totalapprovalshcedule', amDashboardController.totalapprovalshcedule);
+router.post('/totalapprovalcreateorder', amDashboardController.totalapprovalcreateorder);
+router.post('/totalapprovalspv', amDashboardController.totalapprovalspv);
+router.post('/totalapprovalreadyexecution', amDashboardController.totalapprovalreadyexecution);
 router.post('/reportingharianam',amDashboardController.reportingharianam);
 router.post('/totalpartreporting',amDashboardController.totalpartreporting);
 

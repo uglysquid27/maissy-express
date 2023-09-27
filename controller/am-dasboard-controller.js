@@ -568,7 +568,7 @@ exports.totaldatapost = async (req, res) => {
     const { tgl1, tgl2 } = req.body;
     let get = []
     try {
-        get = await config.connect1.query("SELECT DATE_FORMAT(tr.basic_finish_date,'%M') AS bulan, tr.description,tr.basic_finish_date,tr.teco_date,tr.order_type, tr.plant_section FROM tr_wo_sap tr WHERE tr.basic_finish_date BETWEEN '" + tgl1 + "' AND '" + tgl2 + "'", {
+        get = await config.connect1.query("SELECT DATE_FORMAT(tr.basic_finish_date,'%Y-%m') AS bulanTahun, DATE_FORMAT(tr.basic_finish_date,'%M') AS bulan, tr.`order` AS no_wo, tr.`status`, tr.description,tr.basic_finish_date,tr.teco_date, tr.created_at, tr.release_date ,tr.order_type, tr.plant_section FROM tr_wo_sap tr WHERE tr.basic_finish_date BETWEEN '" + tgl1 + "' AND '" + tgl2 + "'", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
@@ -641,6 +641,55 @@ exports.totalapprovalshcedule = async (req, res) => {
     let get = []
     try {
         get = await config.connect1.query("SELECT COUNT(*) AS total FROM view_schedule s WHERE s.id_area = '" + id_area + "' AND s.plan_start IS NULL AND s.plan_end IS NULL ", {
+            type: Sequelize.QueryTypes.SELECT
+        });
+        return res.status(200).json(
+            get
+        );
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+
+};
+
+exports.totalapprovalcreateorder = async (req, res) => {
+    const { id_area } = req.body;
+    let get = []
+    try {
+        get = await config.connect1.query("SELECT COUNT(*) AS total FROM v_work_order s WHERE s.id_area = '" + id_area + "' AND s.status = 'Submit' ", {
+            type: Sequelize.QueryTypes.SELECT
+        });
+        return res.status(200).json(
+            get
+        );
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+
+};
+exports.totalapprovalspv = async (req, res) => {
+    const { id_area } = req.body;
+    let get = []
+    try {
+        get = await config.connect1.query("SELECT COUNT(*) AS total FROM approval_spv s WHERE s.id_area = '" + id_area + "' AND s.status = 'Submit' ", {
+            type: Sequelize.QueryTypes.SELECT
+        });
+        return res.status(200).json(
+            get
+        );
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+
+};
+exports.totalapprovalreadyexecution = async (req, res) => {
+    const { id_area } = req.body;
+    let get = []
+    try {
+        get = await config.connect1.query("SELECT COUNT(*) AS total FROM view_execution s WHERE s.id_area = '" + id_area + "'", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
