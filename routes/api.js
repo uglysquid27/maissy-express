@@ -39,6 +39,7 @@ router.delete('/alarm/delete', alarmController.delete);
 // ROUTE FOR DASHBOARD AM //
 ////////////////////////////
 router.get('/totalf',amDashboardController.read);
+router.get('/temuanharian',amDashboardController.temuanharian);
 router.get('/totalreadpendingexecute',amDashboardController.readpendingexecute);
 router.get('/totalreadreadyexecute', amDashboardController.readreadyexecute);
 router.get('/totalreadfinishexecute', amDashboardController.readfinishexecute);
@@ -122,10 +123,13 @@ router.get('/totalfsbgood',pdmDashboardController.FSBgood);
 router.get('/totalfsbsatis',pdmDashboardController.FSBsatis);
 router.get('/totalfsbunsatis',pdmDashboardController.FSBunsatis);
 router.get('/totalfsbunacc',pdmDashboardController.FSBunacc);
-router.get('/finishtodaylistoci1',pdmDashboardController.finishtodaylistoci1);
+router.post('/finishtodaylistoci1',pdmDashboardController.finishtodaylistoci1);
+router.post('/historycheckoci1',pdmDashboardController.historycheckoci1);
+router.post('/historycheckoci2',pdmDashboardController.historycheckoci2);
+router.post('/historycheckfsb',pdmDashboardController.historycheckfsb);
 router.get('/finishtodaylistoci1testname',pdmDashboardController.finishtodaylistoci1testname);
-router.get('/finishtodaylistoci2',pdmDashboardController.finishtodaylistoci2);
-router.get('/finishtodaylistfsb',pdmDashboardController.finishtodaylistfsb);
+router.post('/finishtodaylistoci2',pdmDashboardController.finishtodaylistoci2);
+router.post('/finishtodaylistfsb',pdmDashboardController.finishtodaylistfsb);
 router.get('/finishtodaylistoci1abnormal',pdmDashboardController.finishtodaylistoci1abnormal);
 router.get('/finishtodaylistoci2abnormal',pdmDashboardController.finishtodaylistoci2abnormal);
 router.get('/finishtodaylistfsbabnormal',pdmDashboardController.finishtodaylistfsbabnormal);
@@ -143,9 +147,9 @@ router.get('/oci1fnotfinish',pdmDashboardController.oci1fnotfinish);
 router.get('/oci2fnotfinish',pdmDashboardController.oci2fnotfinish);
 router.get('/fsbffinish',pdmDashboardController.fsbffinish);
 router.get('/fsbfnotfinish',pdmDashboardController.fsbfnotfinish);
-router.get('/oci1valuepermonth',pdmDashboardController.oci1valuepermonth);
-router.get('/oci2valuepermonth',pdmDashboardController.oci2valuepermonth);
-router.get('/fsbvaluepermonth',pdmDashboardController.fsbvaluepermonth);
+router.post('/oci1valuepermonth',pdmDashboardController.oci1valuepermonth);
+router.post('/oci2valuepermonth',pdmDashboardController.oci2valuepermonth);
+router.post('/fsbvaluepermonth',pdmDashboardController.fsbvaluepermonth);
 
 ///////////////////////////////
 // ROUTE FOR COST MONITORING //

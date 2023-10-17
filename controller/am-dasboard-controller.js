@@ -584,14 +584,39 @@ exports.totaldatapost = async (req, res) => {
 exports.totalfeeding = async (req, res) => {
     try {
         const get = await config.connect1.query(
-            `SELECT l.level,a.id, DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun, MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, b.status_pengerjaan AS status_pengerjaan, b.no_wo, c.status AS status2, a.id_area AS id_area 
+            `SELECT l.level,a.id,  MONTH(a.tanggal_temuan) AS bulan, DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun, MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, b.status_pengerjaan AS status_pengerjaan, b.no_wo, c.status AS status2, a.id_area AS id_area 
             FROM tr_temuan_h a 
             JOIN mst_level l ON l.id = a.level 
             JOIN mst_order b ON a.id = b.id_temuan 
             JOIN tr_wo_sap c ON b.no_wo=c.order
-            WHERE YEAR(tanggal_temuan) = YEAR(NOW()) 
+            WHERE YEAR(tanggal_temuan) = YEAR(NOW())
                     UNION ALL
-                    SELECT l.level,a.id,  DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun,MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, NULL AS status_pengerjaan, null, null, a.id_area AS id_area 
+                    SELECT l.level,a.id,  MONTH(a.tanggal_temuan) AS bulan,  DATE_FORMAT(a.tanggal_temuan,'%Y-%m') as bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun,MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, NULL AS status_pengerjaan, null, null, a.id_area AS id_area 
+                            FROM tr_temuan_h a
+                            JOIN mst_level l ON l.id = a.level 
+                            WHERE YEAR(tanggal_temuan) = YEAR(NOW()) ORDER BY id_area, tanggal_temuan DESC`, {
+            type: Sequelize.QueryTypes.SELECT
+        });
+        return res.status(200).json({
+            get
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+};
+
+exports.temuanharian = async (req, res) => {
+    try {
+        const get = await config.connect1.query(
+            `SELECT l.level,a.id,  MONTH(a.tanggal_temuan) AS bulan, DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun, MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, b.status_pengerjaan AS status_pengerjaan, b.no_wo, c.status AS status2, a.id_area AS id_area 
+            FROM tr_temuan_h a 
+            JOIN mst_level l ON l.id = a.level 
+            JOIN mst_order b ON a.id = b.id_temuan 
+            JOIN tr_wo_sap c ON b.no_wo=c.order
+            WHERE YEAR(tanggal_temuan) = YEAR(NOW())
+                    UNION ALL
+                    SELECT l.level,a.id,  MONTH(a.tanggal_temuan) AS bulan,  DATE_FORMAT(a.tanggal_temuan,'%Y-%m') as bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun,MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, NULL AS status_pengerjaan, null, null, a.id_area AS id_area 
                             FROM tr_temuan_h a
                             JOIN mst_level l ON l.id = a.level 
                             WHERE YEAR(tanggal_temuan) = YEAR(NOW()) ORDER BY id_area, tanggal_temuan DESC`, {
@@ -623,7 +648,13 @@ exports.totalapprovalorderfinish = async (req, res) => {
     const { id_area } = req.body;
     let get = []
     try {
-        get = await config.connect1.query("SELECT COUNT(*) AS total FROM v_order_finish s WHERE s.id_area = '" + id_area + "'", {
+        get = await config.connect1.query(`SELECT o.id AS id, o.no_wo AS no_wo, h.finding AS finding, h.id_area AS id_area,
+        h.id_section AS id_section, o.actual_start AS actual_start, o.actual_end AS
+        actual_end, o.executor AS executor, o.foto AS foto, o.note_executor AS
+        note_executor, o.note_cek_spv AS note_cek_spv, o.status_spv AS status_spv
+      FROM mst_order o JOIN
+        tr_temuan_h h ON h.id = o.id_temuan
+      WHERE o.actual_start IS NOT NULL AND o.status_spv IS NULL AND h.id_area = '` + id_area + `'`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
@@ -640,7 +671,7 @@ exports.totalapprovalshcedule = async (req, res) => {
     const { id_area } = req.body;
     let get = []
     try {
-        get = await config.connect1.query("SELECT COUNT(*) AS total FROM view_schedule s WHERE s.id_area = '" + id_area + "' AND s.plan_start IS NULL AND s.plan_end IS NULL ", {
+        get = await config.connect1.query("SELECT o.id AS id, o.id_temuan AS id_temuan, o.funlock AS funlock, o.no_wo AS no_wo, trwo.order_type AS order_type, o.id_area AS id_area, o.id_section AS id_section, o.`desc` AS `desc`, o.plan_start AS plan_start, trwo.created_at, DATE_FORMAT(trwo.created_at,'%Y-%m') AS bulanTahun, o.plan_end AS plan_end, o.executor AS executor, o.note_spv AS note_spv, o.waktu_pengerjaandone AS waktu_pengerjaandone FROM mst_order o JOIN tr_wo_sap trwo ON trwo.order = o.no_wo WHERE o.plan_start IS NULL AND o.plan_end IS NULL AND trwo.status = 'READY' AND o.actual_start IS NULL AND o.actual_end IS NULL AND o.id_area = '" + id_area + "'", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
@@ -657,7 +688,22 @@ exports.totalapprovalcreateorder = async (req, res) => {
     const { id_area } = req.body;
     let get = []
     try {
-        get = await config.connect1.query("SELECT COUNT(*) AS total FROM v_work_order s WHERE s.id_area = '" + id_area + "' AND s.status = 'Submit' ", {
+        get = await config.connect1.query(`SELECT t.id AS id, t.tanggal_temuan AS tanggal_temuan, t.order_type AS
+        order_type, t.main_work_center AS main_work_center, t.pm_act_type AS
+        pm_act_type, t.planner_group AS planner_group, t.func_loc AS func_loc,
+        t.maintance_plan AS maintance_plan, t.plant_section AS plant_section,
+        t.note AS spv_note, t.work_center AS work_center, t.profit_center AS
+        profit_center, t.responsible_cost_center AS responsible_cost_center,
+        t.wbs_element AS wbs_element, t.cost_center AS cost_center, t.basic_start AS
+        basic_start, t.basic_finish AS basic_finish, t.level AS level, t.finding AS
+        finding, t.sys_cond AS sys_cond, t.finding_description AS finding_description,
+        t.report_by AS report_by, t.object_part AS object_part, t.ob_detail AS
+        ob_detail, t.damage AS damage, t.d_detail AS d_detail, t.cause_code AS
+        cause_code, t.cc_detail AS cc_detail, t.status AS status, t.id_area AS
+        id_area, t.id_section AS id_section, t.photo AS photo, t.foto_validasi AS
+        foto_validasi, t.photo_type AS photo_type, t.photo_size AS photo_size,
+        t.photo_width AS photo_width, t.user AS user
+      FROM tr_temuan_h t WHERE t.status = 'submit' AND t.id_area = '` + id_area + `'`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
@@ -673,7 +719,33 @@ exports.totalapprovalspv = async (req, res) => {
     const { id_area } = req.body;
     let get = []
     try {
-        get = await config.connect1.query("SELECT COUNT(*) AS total FROM approval_spv s WHERE s.id_area = '" + id_area + "' AND s.status = 'Submit' ", {
+        get = await config.connect1.query(`SELECT tr_temuan_h.id AS id, tr_temuan_h.finding AS finding,
+        tr_temuan_h.finding_description AS finding_description, tr_temuan_h.photo AS
+        photo, tr_temuan_h.user AS user, tr_temuan_h.tanggal_temuan AS tanggal_temuan,
+        tr_temuan_h.id_area AS id_area, tr_temuan_h.id_section AS id_section,
+        tr_temuan_h.func_loc AS func_loc, tr_temuan_h.object_part AS object_part,
+        tr_temuan_h.ob_detail AS ob_detail, tr_temuan_h.damage AS damage,
+        tr_temuan_h.d_detail AS d_detail, tr_temuan_h.cause_code AS cause_code,
+        tr_temuan_h.cc_detail AS cc_detail, tr_temuan_h.level AS level,
+        tr_temuan_h.kategori AS kategori, tr_temuan_h.scope AS scope,
+        tr_temuan_h.status AS status, tr_temuan_h.approve_spv AS approve_spv,
+        tr_temuan_h.last_update AS last_update, tr_temuan_h.note AS note,
+        tr_temuan_h.approve_by AS approve_by, tr_temuan_h.approve_date AS
+        approve_date, tr_temuan_h.schedule AS schedule, tr_temuan_h.pic AS pic,
+        tr_temuan_h.photo_type AS photo_type, tr_temuan_h.photo_size AS photo_size,
+        tr_temuan_h.photo_width AS photo_width, tr_temuan_h.photo_height AS
+        photo_height, tr_temuan_h.order_type AS order_type, tr_temuan_h.pm_act_type AS
+        pm_act_type, tr_temuan_h.sys_cond AS sys_cond, tr_temuan_h.basic_start AS
+        basic_start, tr_temuan_h.basic_finish AS basic_finish, tr_temuan_h.report_by
+        AS report_by, tr_temuan_h.main_work_center AS main_work_center,
+        tr_temuan_h.planner_group AS planner_group, tr_temuan_h.plant_section AS
+        plant_section, tr_temuan_h.work_center AS work_center,
+        tr_temuan_h.profit_center AS profit_center,
+        tr_temuan_h.responsible_cost_center AS responsible_cost_center,
+        tr_temuan_h.wbs_element AS wbs_element, tr_temuan_h.cost_center AS
+        cost_center, tr_temuan_h.maintance_plan AS maintance_plan
+      FROM tr_temuan_h
+      WHERE tr_temuan_h.scope = 0 AND tr_temuan_h.approve_spv IS NULL AND tr_temuan_h.status = 'Submit' AND tr_temuan_h.id_area = '` + id_area + `'`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
@@ -689,7 +761,7 @@ exports.totalapprovalreadyexecution = async (req, res) => {
     const { id_area } = req.body;
     let get = []
     try {
-        get = await config.connect1.query("SELECT COUNT(*) AS total FROM view_execution s WHERE s.id_area = '" + id_area + "'", {
+        get = await config.connect1.query("SELECT o.id AS id, o.no_wo AS no_wo, trwo.order_type AS order_type, o.`desc` AS `desc`, o.id_area AS id_area, o.id_section AS id_section, o.plan_start AS plan_start, o.plan_end AS plan_end, o.executor AS executor, o.actual_start AS actual_start, o.actual_end AS actual_end, o.foto AS foto, o.note_executor AS note_executor, o.status_pengerjaan AS status_pengerjaan, o.photo AS photo, o.photo_type AS photo_type, o.photo_size AS photo_size, o.photo_width AS photo_width FROM mst_order o JOIN tr_wo_sap trwo ON trwo.order = o.no_wo WHERE o.plan_start IS NOT NULL AND o.plan_end IS NOT NULL AND o.status_pengerjaan IS NULL AND o.id_area = '" + id_area + "'", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
@@ -799,7 +871,7 @@ exports.finishgoodoci1 = async (req, res) => {
 exports.costmonitoringoci2 = async (req, res) => {
     try {
         get = await config.connect1.query(`SELECT DATE_FORMAT(date, '%Y') AS year, DATE_FORMAT(date, '%m') AS month, c.category, c.budget, c.actual, a.area 
-        FROM cost_order c
+        FROM cost_order_oc2 c
         JOIN mst_area a ON a.id = c.id_area
         WHERE YEAR(c.date) = '2023' AND a.area = 'OCI-2'`, {
             type: Sequelize.QueryTypes.SELECT
@@ -817,7 +889,7 @@ exports.costmonitoringoci2 = async (req, res) => {
 exports.costmonitoringoci2past = async (req, res) => {
     try {
         get = await config.connect1.query(`SELECT DATE_FORMAT(date, '%Y') AS year, DATE_FORMAT(date, '%m') AS month, c.category, c.budget, c.actual, a.area 
-        FROM cost_order c
+        FROM cost_order_oc2 c
         JOIN mst_area a ON a.id = c.id_area
         WHERE YEAR(c.date) = '2022' AND a.area = 'OCI-2'`, {
             type: Sequelize.QueryTypes.SELECT
@@ -834,7 +906,7 @@ exports.costmonitoringoci2past = async (req, res) => {
 exports.finishgoodoci2 = async (req, res) => {
     try {
         get = await config.connect1.query(`SELECT DATE_FORMAT(f.date, '%Y') AS year, DATE_FORMAT(f.date, '%m') AS MONTH, f.fg_eq , a.area
-        FROM finish_good_product f
+        FROM finish_good_product_oc2 f
         JOIN mst_area a ON f.id_area = a.id
         WHERE a.area = 'OCI-2' `, {
             type: Sequelize.QueryTypes.SELECT
@@ -851,7 +923,7 @@ exports.finishgoodoci2 = async (req, res) => {
 exports.costmonitoringfsb = async (req, res) => {
     try {
         get = await config.connect1.query(`SELECT DATE_FORMAT(date, '%Y') AS year, DATE_FORMAT(date, '%m') AS month, c.category, c.budget, c.actual, a.area 
-        FROM cost_order c
+        FROM cost_order_fsb c
         JOIN mst_area a ON a.id = c.id_area
         WHERE YEAR(c.date) = '2023' AND a.area = 'FSB'`, {
             type: Sequelize.QueryTypes.SELECT
@@ -869,7 +941,7 @@ exports.costmonitoringfsb = async (req, res) => {
 exports.costmonitoringfsbpast = async (req, res) => {
     try {
         get = await config.connect1.query(`SELECT DATE_FORMAT(date, '%Y') AS year, DATE_FORMAT(date, '%m') AS month, c.category, c.budget, c.actual, a.area 
-        FROM cost_order c
+        FROM cost_order_fsb c
         JOIN mst_area a ON a.id = c.id_area
         WHERE YEAR(c.date) = '2022' AND a.area = 'FSB'`, {
             type: Sequelize.QueryTypes.SELECT
@@ -886,7 +958,7 @@ exports.costmonitoringfsbpast = async (req, res) => {
 exports.finishgoodfsb = async (req, res) => {
     try {
         get = await config.connect1.query(`SELECT DATE_FORMAT(f.date, '%Y') AS year, DATE_FORMAT(f.date, '%m') AS MONTH, f.fg_eq , a.area
-        FROM finish_good_product f
+        FROM finish_good_product_fsb f
         JOIN mst_area a ON f.id_area = a.id
         WHERE a.area = 'FSB' `, {
             type: Sequelize.QueryTypes.SELECT
@@ -957,6 +1029,20 @@ exports.ciltreportoci1 = async (req, res) => {
     JOIN mst_cycle c ON c.id = p.id_cycle
     JOIN mst_sub_section ss ON ss.id = p.id_sub_section
 	 JOIN mst_section s ON s.id = ss.id_section WHERE month(c.start_date) = MONTH(NOW()) AND p.id_area = 1`, {
+            type: Sequelize.QueryTypes.SELECT
+        });
+        return res.status(200).json(
+            get
+        );
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+
+};
+exports.nodeCoba = async (req, res) => {
+    try {
+        get = await config.connectNode.query(`SELECT * from current_cv_pack1 limit 1`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(

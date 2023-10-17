@@ -12,7 +12,7 @@ const allModel = require("./models/AllModels");
 var cron = require("node-cron");
 const multer = require("multer");
 const upload = multer();
-
+console.log(workbook);
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 var apisRouter = require('./routes/api');
@@ -68,6 +68,7 @@ app.use(function (err, req, res, next) {
 });
 
 async function first() {
+ 
   for (var sheetIndex = 0; sheetIndex < workbook.SheetNames.length; sheetIndex++) {
     const worksheet = workbook.Sheets[workbook.SheetNames[sheetIndex]];
 
@@ -195,6 +196,6 @@ async function first() {
   // });
   // |-------------- END OF THIS SECTION -------------------
 };
-// first();
+first();
 
 module.exports = app;

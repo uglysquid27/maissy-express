@@ -519,6 +519,7 @@ exports.FSBunacc = async (req, res) => {
 };
 
 exports.finishtodaylistoci1 = async (req, res) => {
+    const { tgl1 } = req.body;
     try {
         const get = await config.connect2.query(
             `WITH StatusInfo AS (
@@ -564,7 +565,69 @@ exports.finishtodaylistoci1 = async (req, res) => {
                 ON mh.device_name = status_info.device_name
                 AND mh.do_date = status_info.do_date
                 AND mh.status_index = status_info.status_index
-            WHERE mh.area_name = 'OCI1'
+            WHERE mh.area_name = 'OCI1' and mh.do_date = '` + tgl1 + `'
+            GROUP BY mh.plan_date, mh.device_name
+            ORDER BY mh.do_date ASC;`, {
+            type: Sequelize.QueryTypes.SELECT
+        });
+
+        return res.status(200).json({
+            get
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+};
+
+exports.historycheckoci1 = async (req, res) => {
+    const { tgl1, tgl2 } = req.body;
+    try {
+        const get = await config.connect2.query(
+            `WITH StatusInfo AS (
+                SELECT
+                    device_name,
+                    do_date,
+                    status_index,
+                    MAX(PIC) AS PIC,
+                    MAX(DATE_FORMAT(do_date, '%d %M %Y')) AS dodate
+                FROM mst_history
+                WHERE status_index IS NOT NULL
+                GROUP BY device_name, do_date, status_index
+            )
+            
+            SELECT
+                mh.device_name,
+                MAX(CASE WHEN mh.test_name = '2H' THEN mh.value ELSE '-' END) AS Two_H,
+                MAX(CASE WHEN mh.test_name = 'CF+ (2H)' THEN mh.value ELSE '-' END) AS CF_Two_H,
+                MAX(CASE WHEN mh.test_name = 'Thermal 2H' THEN mh.value ELSE '-' END) AS Thermal_Two_H,
+                MAX(CASE WHEN mh.test_name = '3H' THEN mh.value ELSE '-' END) AS Three_H,
+                MAX(CASE WHEN mh.test_name = 'CF+ (3H)' THEN mh.value ELSE '-' END) AS CF_Three_H,
+                MAX(CASE WHEN mh.test_name = 'Thermal 3H' THEN mh.value ELSE '-' END) AS Thermal_Three_H,
+                MAX(CASE WHEN mh.test_name = 'R' THEN mh.value ELSE '-' END) AS R,
+                MAX(CASE WHEN mh.test_name = 'S' THEN mh.value ELSE '-' END) AS S,
+                MAX(CASE WHEN mh.test_name = 'T' THEN mh.value ELSE '-' END) AS T,
+                MAX(CASE WHEN mh.test_name = 'freq' THEN mh.value ELSE '-' END) AS Frequency,
+                MAX(CASE WHEN mh.test_name = 'Thermal' THEN mh.value ELSE '-' END) AS Thermal,
+                MAX(CASE WHEN mh.test_name = 'VC' THEN mh.value ELSE '-' END) AS VC,
+                MAX(CASE WHEN mh.status_index THEN mh.PIC ELSE '-' END) AS PIC,
+                MAX(CASE WHEN mh.status_index THEN DATE_FORMAT(mh.do_date, '%d %M %Y') ELSE '-' END) AS dodate,
+                MAX(CASE WHEN mh.status_index THEN mh.do_date ELSE null END) AS do_date,
+                (SELECT hh.test_name FROM mst_history hh WHERE hh.device_name = mh.device_name AND hh.do_date = mh.do_date AND hh.status_index = MAX(mh.status_index) LIMIT 1) AS test_name,
+                CASE
+                    WHEN MAX(mh.status_index) = 1 THEN 'Good'
+                    WHEN MAX(mh.status_index) = 2 THEN 'Satisfactory'
+                    WHEN MAX(mh.status_index) = 3 THEN 'Unsatisfactory'
+                    WHEN MAX(mh.status_index) = 4 THEN 'Unacceptable'
+                    ELSE null
+                END AS Stat,
+                MAX(CASE WHEN mh.status_index THEN mh.do_date ELSE '-' end) AS getdate 
+            FROM mst_history mh
+            LEFT JOIN StatusInfo status_info
+                ON mh.device_name = status_info.device_name
+                AND mh.do_date = status_info.do_date
+                AND mh.status_index = status_info.status_index
+            WHERE mh.area_name = 'OCI1' and mh.do_date BETWEEN '` + tgl1 + `' AND '` + tgl2 + `'
             GROUP BY mh.plan_date, mh.device_name
             ORDER BY mh.do_date ASC;`, {
             type: Sequelize.QueryTypes.SELECT
@@ -596,6 +659,7 @@ exports.finishtodaylistoci1testname = async (req, res) => {
 };
 
 exports.finishtodaylistoci2 = async (req, res) => {
+    const { tgl1 } = req.body;
     try {
         const get = await config.connect2.query(`
         WITH StatusInfo AS (
@@ -641,7 +705,7 @@ exports.finishtodaylistoci2 = async (req, res) => {
             ON mh.device_name = status_info.device_name
             AND mh.do_date = status_info.do_date
             AND mh.status_index = status_info.status_index
-        WHERE mh.area_name = 'OCI2'
+        WHERE mh.area_name = 'OCI2' and mh.do_date = '` + tgl1 + `'
         GROUP BY mh.plan_date, mh.device_name
         ORDER BY mh.do_date ASC;`, {
             type: Sequelize.QueryTypes.SELECT
@@ -655,7 +719,70 @@ exports.finishtodaylistoci2 = async (req, res) => {
     }
 };
 
+exports.historycheckoci2 = async (req, res) => {
+    const { tgl1, tgl2 } = req.body;
+    try {
+        const get = await config.connect2.query(
+            `WITH StatusInfo AS (
+                SELECT
+                    device_name,
+                    do_date,
+                    status_index,
+                    MAX(PIC) AS PIC,
+                    MAX(DATE_FORMAT(do_date, '%d %M %Y')) AS dodate
+                FROM mst_history
+                WHERE status_index IS NOT NULL
+                GROUP BY device_name, do_date, status_index
+            )
+            
+            SELECT
+                mh.device_name,
+                MAX(CASE WHEN mh.test_name = '2H' THEN mh.value ELSE '-' END) AS Two_H,
+                MAX(CASE WHEN mh.test_name = 'CF+ (2H)' THEN mh.value ELSE '-' END) AS CF_Two_H,
+                MAX(CASE WHEN mh.test_name = 'Thermal 2H' THEN mh.value ELSE '-' END) AS Thermal_Two_H,
+                MAX(CASE WHEN mh.test_name = '3H' THEN mh.value ELSE '-' END) AS Three_H,
+                MAX(CASE WHEN mh.test_name = 'CF+ (3H)' THEN mh.value ELSE '-' END) AS CF_Three_H,
+                MAX(CASE WHEN mh.test_name = 'Thermal 3H' THEN mh.value ELSE '-' END) AS Thermal_Three_H,
+                MAX(CASE WHEN mh.test_name = 'R' THEN mh.value ELSE '-' END) AS R,
+                MAX(CASE WHEN mh.test_name = 'S' THEN mh.value ELSE '-' END) AS S,
+                MAX(CASE WHEN mh.test_name = 'T' THEN mh.value ELSE '-' END) AS T,
+                MAX(CASE WHEN mh.test_name = 'freq' THEN mh.value ELSE '-' END) AS Frequency,
+                MAX(CASE WHEN mh.test_name = 'Thermal' THEN mh.value ELSE '-' END) AS Thermal,
+                MAX(CASE WHEN mh.test_name = 'VC' THEN mh.value ELSE '-' END) AS VC,
+                MAX(CASE WHEN mh.status_index THEN mh.PIC ELSE '-' END) AS PIC,
+                MAX(CASE WHEN mh.status_index THEN DATE_FORMAT(mh.do_date, '%d %M %Y') ELSE '-' END) AS dodate,
+                MAX(CASE WHEN mh.status_index THEN mh.do_date ELSE null END) AS do_date,
+                (SELECT hh.test_name FROM mst_history hh WHERE hh.device_name = mh.device_name AND hh.do_date = mh.do_date AND hh.status_index = MAX(mh.status_index) LIMIT 1) AS test_name,
+                CASE
+                    WHEN MAX(mh.status_index) = 1 THEN 'Good'
+                    WHEN MAX(mh.status_index) = 2 THEN 'Satisfactory'
+                    WHEN MAX(mh.status_index) = 3 THEN 'Unsatisfactory'
+                    WHEN MAX(mh.status_index) = 4 THEN 'Unacceptable'
+                    ELSE null
+                END AS Stat,
+                MAX(CASE WHEN mh.status_index THEN mh.do_date ELSE '-' end) AS getdate 
+            FROM mst_history mh
+            LEFT JOIN StatusInfo status_info
+                ON mh.device_name = status_info.device_name
+                AND mh.do_date = status_info.do_date
+                AND mh.status_index = status_info.status_index
+            WHERE mh.area_name = 'OCI2' and mh.do_date BETWEEN '` + tgl1 + `' AND '` + tgl2 + `'
+            GROUP BY mh.plan_date, mh.device_name
+            ORDER BY mh.do_date ASC;`, {
+            type: Sequelize.QueryTypes.SELECT
+        });
+
+        return res.status(200).json({
+            get
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+};
+
 exports.finishtodaylistfsb = async (req, res) => {
+    const { tgl1 } = req.body;
     try {
         const get = await config.connect2.query(`
         WITH StatusInfo AS (
@@ -701,7 +828,7 @@ exports.finishtodaylistfsb = async (req, res) => {
             ON mh.device_name = status_info.device_name
             AND mh.do_date = status_info.do_date
             AND mh.status_index = status_info.status_index
-        WHERE mh.area_name = 'SBK1'
+        WHERE mh.area_name = 'SBK1' and mh.do_date = '` + tgl1 + `'
         GROUP BY mh.plan_date, mh.device_name
         ORDER BY mh.do_date ASC;`, {
             type: Sequelize.QueryTypes.SELECT
@@ -714,6 +841,69 @@ exports.finishtodaylistfsb = async (req, res) => {
         return res.status(500).json({ error: error.message })
     }
 };
+
+exports.historycheckfsb = async (req, res) => {
+    const { tgl1, tgl2 } = req.body;
+    try {
+        const get = await config.connect2.query(
+            `WITH StatusInfo AS (
+                SELECT
+                    device_name,
+                    do_date,
+                    status_index,
+                    MAX(PIC) AS PIC,
+                    MAX(DATE_FORMAT(do_date, '%d %M %Y')) AS dodate
+                FROM mst_history
+                WHERE status_index IS NOT NULL
+                GROUP BY device_name, do_date, status_index
+            )
+            
+            SELECT
+                mh.device_name,
+                MAX(CASE WHEN mh.test_name = '2H' THEN mh.value ELSE '-' END) AS Two_H,
+                MAX(CASE WHEN mh.test_name = 'CF+ (2H)' THEN mh.value ELSE '-' END) AS CF_Two_H,
+                MAX(CASE WHEN mh.test_name = 'Thermal 2H' THEN mh.value ELSE '-' END) AS Thermal_Two_H,
+                MAX(CASE WHEN mh.test_name = '3H' THEN mh.value ELSE '-' END) AS Three_H,
+                MAX(CASE WHEN mh.test_name = 'CF+ (3H)' THEN mh.value ELSE '-' END) AS CF_Three_H,
+                MAX(CASE WHEN mh.test_name = 'Thermal 3H' THEN mh.value ELSE '-' END) AS Thermal_Three_H,
+                MAX(CASE WHEN mh.test_name = 'R' THEN mh.value ELSE '-' END) AS R,
+                MAX(CASE WHEN mh.test_name = 'S' THEN mh.value ELSE '-' END) AS S,
+                MAX(CASE WHEN mh.test_name = 'T' THEN mh.value ELSE '-' END) AS T,
+                MAX(CASE WHEN mh.test_name = 'freq' THEN mh.value ELSE '-' END) AS Frequency,
+                MAX(CASE WHEN mh.test_name = 'Thermal' THEN mh.value ELSE '-' END) AS Thermal,
+                MAX(CASE WHEN mh.test_name = 'VC' THEN mh.value ELSE '-' END) AS VC,
+                MAX(CASE WHEN mh.status_index THEN mh.PIC ELSE '-' END) AS PIC,
+                MAX(CASE WHEN mh.status_index THEN DATE_FORMAT(mh.do_date, '%d %M %Y') ELSE '-' END) AS dodate,
+                MAX(CASE WHEN mh.status_index THEN mh.do_date ELSE null END) AS do_date,
+                (SELECT hh.test_name FROM mst_history hh WHERE hh.device_name = mh.device_name AND hh.do_date = mh.do_date AND hh.status_index = MAX(mh.status_index) LIMIT 1) AS test_name,
+                CASE
+                    WHEN MAX(mh.status_index) = 1 THEN 'Good'
+                    WHEN MAX(mh.status_index) = 2 THEN 'Satisfactory'
+                    WHEN MAX(mh.status_index) = 3 THEN 'Unsatisfactory'
+                    WHEN MAX(mh.status_index) = 4 THEN 'Unacceptable'
+                    ELSE null
+                END AS Stat,
+                MAX(CASE WHEN mh.status_index THEN mh.do_date ELSE '-' end) AS getdate 
+            FROM mst_history mh
+            LEFT JOIN StatusInfo status_info
+                ON mh.device_name = status_info.device_name
+                AND mh.do_date = status_info.do_date
+                AND mh.status_index = status_info.status_index
+            WHERE mh.area_name = 'SBK1' and mh.do_date BETWEEN '` + tgl1 + `' AND '` + tgl2 + `'
+            GROUP BY mh.plan_date, mh.device_name
+            ORDER BY mh.do_date ASC;`, {
+            type: Sequelize.QueryTypes.SELECT
+        });
+
+        return res.status(200).json({
+            get
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+};
+
 exports.finishtodaylistoci1abnormal = async (req, res) => {
     try {
         const get = await config.connect2.query("SELECT mh.device_name,MAX(CASE WHEN mh.test_name = '2H' THEN mh.value ELSE '-' END) AS Two_H,MAX(CASE WHEN mh.test_name = 'R' THEN mh.value ELSE '-' END) AS R,MAX(CASE WHEN mh.test_name = 'S' THEN mh.value ELSE '-' END) AS S,MAX(CASE WHEN mh.test_name = 'T' THEN mh.value ELSE '-' END) AS T,MAX(CASE WHEN mh.test_name = 'freq' THEN mh.value ELSE '-' END) AS Frequency,MAX(CASE WHEN mh.test_name = 'Thermal' THEN mh.value ELSE '-' END) AS Thermal,MAX(CASE WHEN mh.test_name = 'CF+ (2H)' THEN mh.value ELSE '-' END) AS CF,MAX(CASE WHEN mh.test_name = 'VC' THEN mh.value ELSE '-' END) AS VC,MAX(CASE WHEN mh.status_index THEN mh.PIC ELSE '-' END) AS PIC,MAX(CASE WHEN mh.status_index THEN DATE_FORMAT(mh.do_date, '%d %M %Y') ELSE '-' END) AS dodate,CASE WHEN max(mh.status_index) = 1 THEN 'Good' WHEN max(mh.status_index) = 2 THEN 'Satisfactory' WHEN max(mh.status_index) = 3 THEN 'Unsatisfactory' WHEN max(mh.status_index) = 4 THEN 'Unacceptable' ELSE '-' END AS Stat,MAX(CASE WHEN mh.status_index THEN mh.do_date ELSE '-' end) AS getdate FROM mst_history mh WHERE mh.area_name = 'OCI1' GROUP BY mh.device_name,mh.do_date ORDER BY mh.do_date DESC;", {
@@ -1033,8 +1223,9 @@ exports.fsbfnotfinish = async (req, res) => {
 };
 
 exports.oci1valuepermonth = async (req, res) => {
+    const { tgl } = req.body;
     try {
-        const get = await config.connect2.query("SELECT DATE_FORMAT(h.do_date,'%M') AS bulan,h.device_name FROM mst_history h WHERE h.area_name = 'OCI1' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND CURRENT_TIMESTAMP GROUP BY h.device_name,h.do_date;", {
+        const get = await config.connect2.query("SELECT h.do_date, DATE_FORMAT(h.do_date, '%Y-%m') AS bulan, MONTH(h.do_date) AS month, h.device_name FROM mst_history h WHERE h.area_name = 'OCI1' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND '" + tgl + "' GROUP BY h.device_name, h.do_date ORDER BY h.do_date;", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
@@ -1047,8 +1238,9 @@ exports.oci1valuepermonth = async (req, res) => {
 };
 
 exports.oci2valuepermonth = async (req, res) => {
+    const { tgl } = req.body;
     try {
-        const get = await config.connect2.query("SELECT DATE_FORMAT(h.do_date,'%M') AS bulan,h.device_name FROM mst_history h WHERE h.area_name = 'OCI2' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND CURRENT_TIMESTAMP GROUP BY h.device_name,h.do_date;", {
+        const get = await config.connect2.query("SELECT  h.do_date, DATE_FORMAT(h.do_date,'%M') AS bulan, h.device_name FROM mst_history h WHERE h.area_name = 'OCI2' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND '" + tgl + "' GROUP BY h.device_name, h.do_date ORDER BY h.do_date;", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
@@ -1061,8 +1253,9 @@ exports.oci2valuepermonth = async (req, res) => {
 };
 
 exports.fsbvaluepermonth = async (req, res) => {
+    const { tgl } = req.body;
     try {
-        const get = await config.connect2.query("SELECT DATE_FORMAT(h.do_date,'%M') AS bulan,h.device_name FROM mst_history h WHERE h.area_name = 'SBK1' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND CURRENT_TIMESTAMP GROUP BY h.device_name,h.do_date;", {
+        const get = await config.connect2.query("SELECT  h.do_date, DATE_FORMAT(h.do_date,'%M') AS bulan, h.device_name FROM mst_history h WHERE h.area_name = 'SBK1' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND '" + tgl + "' GROUP BY h.device_name, h.do_date ORDER BY h.do_date;", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({

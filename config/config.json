@@ -66,5 +66,17 @@
       "multipleStatements": true
     },
     "timezone": "+07:00"
+  },
+  "node_red": {
+    "username": "intern",
+    "password": "intern",
+    "database": "node_red",
+    "host": "192.168.9.8",
+    "port": "3306",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "multipleStatements": true
+    },
+    "timezone": "+07:00"
   }
 }
