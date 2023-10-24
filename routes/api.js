@@ -7,7 +7,7 @@ const big5Controller = require("../controller/big5-dasboard-controllers");
 const alarmController = require("../controller/mst-alarm-controllers");
 const authController = require("../controller/auth.controllers");
 const amDashboardController = require("../controller/am-dasboard-controller");
-const pdmDashboardController = require("../controller/pdm-dashboard-controllers");
+
 const kluberController = require("../controller/kluber-controller");
 const documentationController = require("../controller/sms-doc-controller");
 // const authController = require("./../controller/auth.controllers");
@@ -35,121 +35,12 @@ router.get('/alarm/getbyid', alarmController.readbyid);
 router.post('/alarm/update', alarmController.update);
 router.delete('/alarm/delete', alarmController.delete);
 
-////////////////////////////
-// ROUTE FOR DASHBOARD AM //
-////////////////////////////
-router.get('/totalf',amDashboardController.read);
-router.get('/temuanharian',amDashboardController.temuanharian);
-router.get('/totalreadpendingexecute',amDashboardController.readpendingexecute);
-router.get('/totalreadreadyexecute', amDashboardController.readreadyexecute);
-router.get('/totalreadfinishexecute', amDashboardController.readfinishexecute);
-router.get('/totalfindingm',amDashboardController.readTotalFindingM);
-router.get('/totalpendingexecutem',amDashboardController.readpendingexecutem);
-router.get('/totalreadyexecutem',amDashboardController.readreadyexecutem);
-router.get('/totalfinishexecutem',amDashboardController.readfinishexecutem);
-router.get('/findingpending',amDashboardController.findingpending);
-router.get('/funcloc',amDashboardController.funcloc);
-router.get('/funclococi2',amDashboardController.funclococi2);
-router.get('/funclocfsb',amDashboardController.funclocfsb);
-router.get('/findingpendingsection',amDashboardController.findingpendingsection);
-router.get('/findingpendingsectionoci2',amDashboardController.findingpendingsectionoci2);
-router.get('/findingpendingsectionfsb',amDashboardController.findingpendingsectionfsb);
-router.get('/levelam',amDashboardController.levelam);
-router.get('/totalfindingmoci2',amDashboardController.readTotalFindingMoci2);
-router.get('/totalpendingexecutemoci2',amDashboardController.readpendingexecutemoci2);
-router.get('/totalreadyexecutemoci2',amDashboardController.readreadyexecutemoci2);
-router.get('/totalfinishexecutemoci2',amDashboardController.readfinishexecutemoci2);
-router.get('/findingpendingoci2',amDashboardController.findingpendingoci2);
-router.get('/levelamoci2',amDashboardController.levelamoci2);
-router.get('/totalfindingmfsb',amDashboardController.readTotalFindingMfsb);
-router.get('/totalpendingexecutemfsb',amDashboardController.readpendingexecutemfsb);
-router.get('/totalreadyexecutemfsb',amDashboardController.readreadyexecutemfsb);
-router.get('/totalfinishexecutemfsb',amDashboardController.readfinishexecutemfsb);
-router.get('/findingpendingfsb',amDashboardController.findingpendingfsb);
-router.get('/findingpendingutileng', amDashboardController.findingpendingutileng);
-router.get('/levelamutileng', amDashboardController.levelamutileng);
-router.get('/levelamfsb',amDashboardController.levelamfsb);
-router.get('/kategori',amDashboardController.kategori);
-router.get('/getorder',amDashboardController.getOrder);
-router.get('/total1year',amDashboardController.totaldata1year);
-router.post('/totaldatapost', amDashboardController.totaldatapost);
-router.get('/totalfeeding', amDashboardController.totalfeeding);
-router.get('/totalapproval', amDashboardController.totalapproval);
-router.post('/totalapprovalorderfinish', amDashboardController.totalapprovalorderfinish);
-router.post('/totalapprovalshcedule', amDashboardController.totalapprovalshcedule);
-router.post('/totalapprovalcreateorder', amDashboardController.totalapprovalcreateorder);
-router.post('/totalapprovalspv', amDashboardController.totalapprovalspv);
-router.post('/totalapprovalreadyexecution', amDashboardController.totalapprovalreadyexecution);
-router.post('/reportingharianam',amDashboardController.reportingharianam);
-router.post('/totalpartreporting',amDashboardController.totalpartreporting);
+
 
 /////////////////////////////
 // ROUTE FOR DASHBOARD PDM //
 /////////////////////////////
-router.get('/totalpdmasset', pdmDashboardController.readtotalasset);
-router.get('/totalpdmassetoci1', pdmDashboardController.readtotalassetoci1);
-router.get('/pdmassetoci1', pdmDashboardController.readassetoci1);
-router.get('/pdmassetoci2', pdmDashboardController.readassetoci2);
-router.get('/pdmassetfsb', pdmDashboardController.readassetfsb);
-router.get('/totalpdmassetoci2', pdmDashboardController.readtotalassetoci2);
-router.get('/totalpdmassetfsb', pdmDashboardController.readtotalassetfsb);
-router.get('/totalreadfinishpdm',pdmDashboardController.readtotalfinish);
-router.get('/totalreadfinishpdmoci1',pdmDashboardController.readtotalfinishoci1);
-router.get('/totalreadfinishpdmoci2',pdmDashboardController.readtotalfinishoci2);
-router.get('/totalreadfinishpdmfsb',pdmDashboardController.readtotalfinishfsb);
-router.get('/totalgoodandsatis',pdmDashboardController.readgoodandsatis);
-router.get('/totalgoodandsatisoci1',pdmDashboardController.readgoodandsatisoci1);
-router.get('/totalgoodandsatisoci2',pdmDashboardController.readgoodandsatisoci2);
-router.get('/totalgoodandsatisfsb',pdmDashboardController.readgoodandsatisfsb);
-router.get('/totalgoodandsatisoci1y',pdmDashboardController.readgoodandsatisoci1y);
-router.get('/totalgoodandsatisoci2y',pdmDashboardController.readgoodandsatisoci2y);
-router.get('/totalgoodandsatisfsby',pdmDashboardController.readgoodandsatisfsby);
-router.get('/totalunsatisunac',pdmDashboardController.unsatisunac);
-router.get('/totalunsatisunacoci1',pdmDashboardController.unsatisunacoci1);
-router.get('/totalunsatisunacoci2',pdmDashboardController.unsatisunacoci2);
-router.get('/totalunsatisunacfsb',pdmDashboardController.unsatisunacfsb);
-router.get('/totalasetoci1',pdmDashboardController.assetoci1);
-router.get('/totalasetoci2',pdmDashboardController.assetoci2);
-router.get('/totalasetfsb',pdmDashboardController.assetfsb);
-router.get('/totaloci1good',pdmDashboardController.oci1good);
-router.get('/totaloci1satis',pdmDashboardController.oci1satis);
-router.get('/totaloci1unsatis',pdmDashboardController.oci1unsatis);
-router.get('/totaloci1unacc',pdmDashboardController.oci1unacc);
-router.get('/totaloci2good',pdmDashboardController.oci2good);
-router.get('/totaloci2satis',pdmDashboardController.oci2satis);
-router.get('/totaloci2unsatis',pdmDashboardController.oci2unsatis);
-router.get('/totaloci2unacc',pdmDashboardController.oci2unacc);
-router.get('/totalfsbgood',pdmDashboardController.FSBgood);
-router.get('/totalfsbsatis',pdmDashboardController.FSBsatis);
-router.get('/totalfsbunsatis',pdmDashboardController.FSBunsatis);
-router.get('/totalfsbunacc',pdmDashboardController.FSBunacc);
-router.post('/finishtodaylistoci1',pdmDashboardController.finishtodaylistoci1);
-router.post('/historycheckoci1',pdmDashboardController.historycheckoci1);
-router.post('/historycheckoci2',pdmDashboardController.historycheckoci2);
-router.post('/historycheckfsb',pdmDashboardController.historycheckfsb);
-router.get('/finishtodaylistoci1testname',pdmDashboardController.finishtodaylistoci1testname);
-router.post('/finishtodaylistoci2',pdmDashboardController.finishtodaylistoci2);
-router.post('/finishtodaylistfsb',pdmDashboardController.finishtodaylistfsb);
-router.get('/finishtodaylistoci1abnormal',pdmDashboardController.finishtodaylistoci1abnormal);
-router.get('/finishtodaylistoci2abnormal',pdmDashboardController.finishtodaylistoci2abnormal);
-router.get('/finishtodaylistfsbabnormal',pdmDashboardController.finishtodaylistfsbabnormal);
-router.get('/vibrationlineoci1',pdmDashboardController.vibrationlineoci1);
-router.get('/vibrationlineoci2',pdmDashboardController.vibrationlineoci2);
-router.get('/vibrationlinefsb',pdmDashboardController.vibrationlinefsb);
-router.get('/amperelineoci1',pdmDashboardController.amperelineoci1);
-router.get('/amperelineoci2',pdmDashboardController.amperelineoci2);
-router.get('/amperelinefsb',pdmDashboardController.amperelinefsb);
-router.get('/temperaturelineoci1',pdmDashboardController.temperaturelineoci1);
-router.get('/temperaturelineoci2',pdmDashboardController.temperaturelineoci2);
-router.get('/temperaturelinefsb',pdmDashboardController.temperaturelinefsb);
-router.get('/notepdm',pdmDashboardController.notepdm);
-router.get('/oci1fnotfinish',pdmDashboardController.oci1fnotfinish);
-router.get('/oci2fnotfinish',pdmDashboardController.oci2fnotfinish);
-router.get('/fsbffinish',pdmDashboardController.fsbffinish);
-router.get('/fsbfnotfinish',pdmDashboardController.fsbfnotfinish);
-router.post('/oci1valuepermonth',pdmDashboardController.oci1valuepermonth);
-router.post('/oci2valuepermonth',pdmDashboardController.oci2valuepermonth);
-router.post('/fsbvaluepermonth',pdmDashboardController.fsbvaluepermonth);
+
 
 ///////////////////////////////
 // ROUTE FOR COST MONITORING //

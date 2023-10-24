@@ -16,6 +16,8 @@ console.log(workbook);
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 var apisRouter = require('./routes/api');
+var amRouter = require('./routes/am-router');
+var pdmRouter = require('./routes/pdm-router');
 // var authRouter = require('./routes/auth');
 
 var OPCUACtrl = require("./controller/OPCUA.controller");
@@ -41,6 +43,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(upload.none())
 
 app.use('/', apisRouter);
+app.use('/am', amRouter);
+app.use('/pdm', pdmRouter);
 // app.use('/users', usersRouter);
 
 app.use(function (req, res, next) {
@@ -199,3 +203,4 @@ async function first() {
 first();
 
 module.exports = app;
+ 

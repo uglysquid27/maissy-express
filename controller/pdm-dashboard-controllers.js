@@ -571,7 +571,7 @@ exports.finishtodaylistoci1 = async (req, res) => {
             type: Sequelize.QueryTypes.SELECT
         });
 
-        return res.status(200).json({
+            return res.status(200).json({
             get
         });
     }
@@ -1015,7 +1015,7 @@ exports.finishtodaylistfsbabnormal = async (req, res) => {
 };
 exports.vibrationlineoci1 = async (req, res) => {
     try {
-        const get = await config.connect2.query("SELECT t.do_date,t.value,t.device_name,t.test_name FROM mst_history t WHERE t.area_name = 'OCI1' AND t.kategori = 'vibration' GROUP BY t.device_name,t.do_date,t.test_name,t.PIC ORDER BY t.do_date ASC;", {
+        const get = await config.connect2.query("SELECT YEAR(t.do_date) AS year, t.do_date,t.value,t.device_name,t.test_name FROM mst_history t WHERE t.area_name = 'OCI1' AND t.kategori = 'vibration' GROUP BY t.device_name,t.do_date,t.test_name,t.PIC ORDER BY t.do_date ASC;", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
@@ -1029,7 +1029,7 @@ exports.vibrationlineoci1 = async (req, res) => {
 
 exports.vibrationlineoci2 = async (req, res) => {
     try {
-        const get = await config.connect2.query("SELECT t.do_date,t.value,t.device_name,t.test_name FROM mst_history t WHERE t.area_name = 'OCI2' AND t.kategori = 'vibration' GROUP BY t.device_name,t.do_date,t.test_name,t.PIC ORDER BY t.do_date ASC;", {
+        const get = await config.connect2.query("SELECT YEAR(t.do_date) AS year, t.do_date,t.value,t.device_name,t.test_name FROM mst_history t WHERE t.area_name = 'OCI2' AND t.kategori = 'vibration' GROUP BY t.device_name,t.do_date,t.test_name,t.PIC ORDER BY t.do_date ASC;", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
@@ -1039,11 +1039,11 @@ exports.vibrationlineoci2 = async (req, res) => {
     catch (error) {
         return res.status(500).json({ error: error.message })
     }
-};
+}; 
 
 exports.vibrationlinefsb = async (req, res) => {
     try {
-        const get = await config.connect2.query("SELECT t.do_date,t.value,t.device_name,t.test_name FROM mst_history t WHERE (t.area_name = 'FSB' OR t.area_name = 'SBK1') AND t.kategori = 'vibration' GROUP BY t.device_name,t.do_date,t.test_name,t.PIC ORDER BY t.do_date ASC;", {
+        const get = await config.connect2.query("SELECT YEAR(t.do_date) AS year, t.do_date,t.value,t.device_name,t.test_name FROM mst_history t WHERE t.area_name = 'FSB' OR t.area_name = 'SBK1' AND t.kategori = 'vibration' GROUP BY t.device_name,t.do_date,t.test_name,t.PIC ORDER BY t.do_date ASC;", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
