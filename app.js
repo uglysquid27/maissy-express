@@ -12,12 +12,15 @@ const allModel = require("./models/AllModels");
 var cron = require("node-cron");
 const multer = require("multer");
 const upload = multer();
-console.log(workbook);
+// console.log(workbook);
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 var apisRouter = require('./routes/api');
 var amRouter = require('./routes/am-router');
 var pdmRouter = require('./routes/pdm-router');
+var pdmOnRouter = require('./routes/pdm-online-router');
+var costRouter = require('./routes/cost-router');
+var ciltRouter = require('./routes/cilt-router');
 // var authRouter = require('./routes/auth');
 
 var OPCUACtrl = require("./controller/OPCUA.controller");
@@ -45,6 +48,9 @@ app.use(upload.none())
 app.use('/', apisRouter);
 app.use('/am', amRouter);
 app.use('/pdm', pdmRouter);
+app.use('/pdm-online', pdmOnRouter);
+app.use('/cost', costRouter);
+app.use('/cilt', ciltRouter);
 // app.use('/users', usersRouter);
 
 app.use(function (req, res, next) {
@@ -147,7 +153,7 @@ async function first() {
           const nodee = worksheet[index2];
           const deskripsii = worksheet[index3];
           if (devicee !== undefined) {
-            console.log(devicee.v);
+            // console.log(devicee.v);
             await db.table.findOne({ where: { name: k.toString() } }
             ).then(async function (data) {
               const { id } = data;

@@ -6,7 +6,7 @@ const tableController = require("../controller/mst-table-controllers");
 const big5Controller = require("../controller/big5-dasboard-controllers");
 const alarmController = require("../controller/mst-alarm-controllers");
 const authController = require("../controller/auth.controllers");
-const amDashboardController = require("../controller/am-dasboard-controller");
+
 
 const kluberController = require("../controller/kluber-controller");
 const documentationController = require("../controller/sms-doc-controller");
@@ -35,33 +35,15 @@ router.get('/alarm/getbyid', alarmController.readbyid);
 router.post('/alarm/update', alarmController.update);
 router.delete('/alarm/delete', alarmController.delete);
 
-
-
-/////////////////////////////
-// ROUTE FOR DASHBOARD PDM //
-/////////////////////////////
+///////////////////////////////
+// ROUTE FOR COST MONITORING //
+///////////////////////////////
 
 
 ///////////////////////////////
 // ROUTE FOR COST MONITORING //
 ///////////////////////////////
-router.get('/costoci1', amDashboardController.costmonitoringoci1);
-router.get('/costoci1past', amDashboardController.costmonitoringoci1past);
-router.get('/fgoci1', amDashboardController.finishgoodoci1);
-router.get('/costoci2', amDashboardController.costmonitoringoci2);
-router.get('/costoci2past', amDashboardController.costmonitoringoci2past);
-router.get('/fgoci2', amDashboardController.finishgoodoci2);
-router.get('/costfsb', amDashboardController.costmonitoringfsb);
-router.get('/costfsbpast', amDashboardController.costmonitoringfsbpast);
-router.get('/fgfsb', amDashboardController.finishgoodfsb);
 
-///////////////////////////////
-// ROUTE FOR COST MONITORING //
-///////////////////////////////
-router.get('/curcycle', amDashboardController.currentcycle);
-router.get('/ciltoci1', amDashboardController.ciltreportoci1);
-router.get('/ciltoci2', amDashboardController.ciltreportoci2);
-router.get('/ciltfsb', amDashboardController.ciltreportfsb);
 
 //////////////////////////////
 // ROUTE FOR DASHBOARD BIG5 //
