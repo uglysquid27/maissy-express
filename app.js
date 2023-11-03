@@ -21,6 +21,7 @@ var pdmRouter = require('./routes/pdm-router');
 var pdmOnRouter = require('./routes/pdm-online-router');
 var costRouter = require('./routes/cost-router');
 var ciltRouter = require('./routes/cilt-router');
+var alarmRouer = require('./routes/alarm');
 // var authRouter = require('./routes/auth');
 
 var OPCUACtrl = require("./controller/OPCUA.controller");
@@ -51,6 +52,7 @@ app.use('/pdm', pdmRouter);
 app.use('/pdm-online', pdmOnRouter);
 app.use('/cost', costRouter);
 app.use('/cilt', ciltRouter);
+app.use('/alarm', alarmRouer);
 // app.use('/users', usersRouter);
 
 app.use(function (req, res, next) {
