@@ -1240,7 +1240,7 @@ exports.oci1valuepermonth = async (req, res) => {
 exports.oci2valuepermonth = async (req, res) => {
     const { tgl } = req.body;
     try {
-        const get = await config.connect2.query("SELECT  h.do_date, DATE_FORMAT(h.do_date,'%M') AS bulan, h.device_name FROM mst_history h WHERE h.area_name = 'OCI2' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND '" + tgl + "' GROUP BY h.device_name, h.do_date ORDER BY h.do_date;", {
+        const get = await config.connect2.query("SELECT h.do_date, DATE_FORMAT(h.do_date, '%Y-%m') AS bulan, MONTH(h.do_date) AS month, h.device_name FROM mst_history h WHERE h.area_name = 'OCI2' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND '" + tgl + "' GROUP BY h.device_name, h.do_date ORDER BY h.do_date;", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
@@ -1255,7 +1255,7 @@ exports.oci2valuepermonth = async (req, res) => {
 exports.fsbvaluepermonth = async (req, res) => {
     const { tgl } = req.body;
     try {
-        const get = await config.connect2.query("SELECT  h.do_date, DATE_FORMAT(h.do_date,'%M') AS bulan, h.device_name FROM mst_history h WHERE h.area_name = 'SBK1' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND '" + tgl + "' GROUP BY h.device_name, h.do_date ORDER BY h.do_date;", {
+        const get = await config.connect2.query("SELECT h.do_date, DATE_FORMAT(h.do_date, '%Y-%m') AS bulan, MONTH(h.do_date) AS month, h.device_name FROM mst_history h WHERE h.area_name = 'SBK1' AND h.do_date BETWEEN date(date_format(CURDATE(),'%Y-01-01')) AND '" + tgl + "' GROUP BY h.device_name, h.do_date ORDER BY h.do_date;", {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({

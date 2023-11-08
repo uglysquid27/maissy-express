@@ -581,7 +581,7 @@ exports.totaldatapost = async (req, res) => {
 }; 
   
 exports.totalfeeding = async (req, res) => {
-    try {
+    try { 
         const get = await config.connect1.query(
             `SELECT l.level, k.kategori, a.id,  MONTH(a.tanggal_temuan) AS bulan, DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun, MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, b.status_pengerjaan AS status_pengerjaan, b.no_wo, c.status AS status2, a.id_area AS id_area 
             FROM tr_temuan_h a 
@@ -589,17 +589,11 @@ exports.totalfeeding = async (req, res) => {
             JOIN mst_order b ON a.id = b.id_temuan 
             JOIN tr_wo_sap c ON b.no_wo=c.order
             JOIN mst_kategori k ON k.id = a.kategori
-            WHERE YEAR(tanggal_temuan) = YEAR(NOW()) 
-                    UNION ALL
-                    SELECT l.level, k.kategori, a.id,  MONTH(a.tanggal_temuan) AS bulan,  DATE_FORMAT(a.tanggal_temuan,'%Y-%m') as bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun,MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, NULL AS status_pengerjaan, null, null, a.id_area AS id_area 
-                            FROM tr_temuan_h a
-                            JOIN mst_level l ON l.id = a.level 
-                            JOIN mst_kategori k ON k.id = a.kategori
-                            WHERE YEAR(tanggal_temuan) = YEAR(NOW()) ORDER BY id_area, tanggal_temuan DESC`, {
+            WHERE YEAR(tanggal_temuan) = YEAR(NOW())`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
-            get
+            get  
         });
     }
     catch (error) {
