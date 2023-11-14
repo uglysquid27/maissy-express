@@ -2,10 +2,15 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require("body-parser");
 
+// Import the multer middleware
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
 const tableController = require("../controller/mst-table-controllers");
 const big5Controller = require("../controller/big5-dasboard-controllers");
 const alarmController = require("../controller/mst-alarm-controllers");
 const authController = require("../controller/auth.controllers");
+const amChecksheetController = require("../controller/am-checksheet-controller");
 
 
 const kluberController = require("../controller/kluber-controller");
@@ -16,6 +21,13 @@ const documentationController = require("../controller/sms-doc-controller");
 // ROUTE FOR AUTH //
 /////////////////////
 router.post("/signin", authController.signin);
+
+/////////////////////
+// ROUTE FOR AM    //
+/////////////////////
+
+// New route for file upload
+// router.post('/upload', upload.single('file'), amChecksheetController.uploadFile);
 
 /////////////////////
 // ROUTE FOR TABLE //
@@ -34,16 +46,6 @@ router.get('/alarm/get', alarmController.read);
 router.get('/alarm/getbyid', alarmController.readbyid);
 router.post('/alarm/update', alarmController.update);
 router.delete('/alarm/delete', alarmController.delete);
-
-///////////////////////////////
-// ROUTE FOR COST MONITORING //
-///////////////////////////////
-
-
-///////////////////////////////
-// ROUTE FOR COST MONITORING //
-///////////////////////////////
-
 
 //////////////////////////////
 // ROUTE FOR DASHBOARD BIG5 //

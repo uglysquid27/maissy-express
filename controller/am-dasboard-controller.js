@@ -598,7 +598,7 @@ exports.totalfeeding = async (req, res) => {
     }
     catch (error) {
         return res.status(500).json({ error: error.message })
-    }
+    } 
 };
 
 exports.temuanharian = async (req, res) => {
