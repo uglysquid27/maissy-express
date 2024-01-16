@@ -90,8 +90,8 @@ exports.costmonitoringoci2past = async (req, res) => {
 
 exports.finishgoodoci2 = async (req, res) => {
     try {
-        get = await config.connect1.query(`SELECT DATE_FORMAT(f.date, '%Y') AS year, DATE_FORMAT(f.date, '%m') AS MONTH, f.fg_eq , a.area
-        FROM finish_good_product_oc2 f
+        get = await config.connect1.query(`SELECT DATE_FORMAT(f.date, '%Y') AS year, DATE_FORMAT(f.date, '%m') AS month, f.fg_eq , a.area
+        FROM finish_good_product f
         JOIN mst_area a ON f.id_area = a.id
         WHERE a.area = 'OCI-2' `, {
             type: Sequelize.QueryTypes.SELECT

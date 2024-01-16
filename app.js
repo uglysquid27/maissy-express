@@ -23,6 +23,7 @@ var costRouter = require('./routes/cost-router');
 var ciltRouter = require('./routes/cilt-router');
 var alarmRouer = require('./routes/alarm');
 var indexRouter = require('./routes/index');
+var prRouter = require('./routes/pr-router');
 // var authRouter = require('./routes/auth');
 
 var OPCUACtrl = require("./controller/OPCUA.controller");
@@ -55,6 +56,7 @@ app.use('/cost', costRouter);
 app.use('/cilt', ciltRouter);
 app.use('/alarm', alarmRouer);
 app.use('/index', indexRouter);
+app.use('/pr', prRouter);
 // app.use('/users', usersRouter);
 
 app.use(function (req, res, next) {

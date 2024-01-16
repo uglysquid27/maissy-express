@@ -1266,3 +1266,18 @@ exports.fsbvaluepermonth = async (req, res) => {
         return res.status(500).json({ error: error.message })
     }
 };
+
+exports.dimas = async (req, res) => {
+    const { tgl } = req.body;
+    try {
+        const get = await config.connect2.query("SELECT * FROM mst_history WHERE device_name Like 'Motor%' AND area_name = 'OCI1'", {
+            type: Sequelize.QueryTypes.SELECT
+        });
+        return res.status(200).json({
+            get
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+};
