@@ -31,7 +31,7 @@ exports.totalRequestWithNumber = async (req, res) => {
 
 exports.totalRequest1vendor = async (req, res) => {
     try {
-        const get = await config.connect1.query(`SELECT * FROM mst_pr WHERE ( v_name IS NOT NULL AND v_value IS NOT NULL) AND (v2_name IS null AND v2_value IS null)`, {
+        const get = await config.connect1.query(`SELECT * FROM mst_pr WHERE ( v_name IS NOT NULL AND v_value IS NOT NULL AND v_name != '') AND (v2_name IS null OR v2_value IS NULL OR v2_name = '' OR v2_name = '')`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
@@ -45,7 +45,7 @@ exports.totalRequest1vendor = async (req, res) => {
 
 exports.totalRequest2vendor = async (req, res) => {
     try {
-        const get = await config.connect1.query(`SELECT * FROM mst_pr WHERE ( v_name IS NOT NULL AND v_value IS NOT NULL) AND (v2_name IS NOT NULL AND v2_value IS NOT NULL)`, {
+        const get = await config.connect1.query(`SELECT * FROM mst_pr WHERE ( v_name IS NOT NULL AND v_value IS NOT NULL AND v_name != '') AND (v2_name IS NOT NULL AND v2_value IS NOT NULL AND v2_name != '')`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
