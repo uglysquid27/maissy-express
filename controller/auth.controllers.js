@@ -10,10 +10,10 @@ const { connectEmployee } = require("../config/connection");
 const signin = async (req, res) => {
   
   try {
-    
+
     const { nik, password } = req.body;
     console.log(req.body);
-    //find a user by their email
+    // find a user by their email
     const user = await connectEmployee.query(
       `SELECT 
       a.lg_nik AS lg_nik,
@@ -38,7 +38,8 @@ const signin = async (req, res) => {
       console.log('req.body:', req.body),
       console.log('user')
     );
-    
+  
+    return res.json(user);
     const data = {
       nik : user[0].lg_nik,
       name : user[0].lg_name,
