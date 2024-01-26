@@ -42,6 +42,7 @@ router.get('/totalfsbsatis',pdmDashboardController.FSBsatis);
 router.get('/totalfsbunsatis',pdmDashboardController.FSBunsatis);
 router.get('/totalfsbunacc',pdmDashboardController.FSBunacc);
 router.post('/finishtodaylistoci1',pdmDashboardController.finishtodaylistoci1);
+router.post('/finishtodaylistoci1devicename',pdmDashboardController.finishtodaylistoci1byname);
 router.post('/historycheckoci1',pdmDashboardController.historycheckoci1);
 router.post('/historycheckoci2',pdmDashboardController.historycheckoci2);
 router.post('/historycheckfsb',pdmDashboardController.historycheckfsb);
