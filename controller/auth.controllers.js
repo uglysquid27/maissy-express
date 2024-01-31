@@ -39,7 +39,6 @@ const signin = async (req, res) => {
       console.log('user')
     );
   
-    return res.json(user);
     const data = {
       nik : user[0].lg_nik,
       name : user[0].lg_name,
@@ -47,7 +46,6 @@ const signin = async (req, res) => {
     }
     secretKey='VkYp3s6v9y$B&EH+MbQeThWmZq4t7w!z%C*FNcRfUjXn2r5u8x/A?DG+KbPdSgVkYp3s6v9y$B&EH@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?DG+'
     const token = jwt.sign(data, secretKey);
-    return res.json(token)
     if (user[0]) {
       let hash = crypto.MD5(password).toString();
 
