@@ -69,6 +69,5 @@ router.get('/fsbfnotfinish',pdmDashboardController.fsbfnotfinish);
 router.post('/oci1valuepermonth',pdmDashboardController.oci1valuepermonth);
 router.post('/oci2valuepermonth',pdmDashboardController.oci2valuepermonth);
 router.post('/fsbvaluepermonth',pdmDashboardController.fsbvaluepermonth);
-router.get('/dimas',pdmDashboardController.dimas);
 
 module.exports = router;

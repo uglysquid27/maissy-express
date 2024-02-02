@@ -577,11 +577,11 @@ exports.totaldatapost = async (req, res) => {
     catch (error) {
         return res.status(500).json({ error: error.message })
     }
-  
-}; 
-  
+
+};
+
 exports.totalfeeding = async (req, res) => {
-    try { 
+    try {
         const get = await config.connect1.query(
             `SELECT l.level, k.kategori, a.id,  MONTH(a.tanggal_temuan) AS bulan, DATE_FORMAT(a.tanggal_temuan,'%Y-%m') AS bulanTahun, a.tanggal_temuan AS tanggal_temuan, YEAR(a.tanggal_temuan) AS tahun, MONTH(a.tanggal_temuan) AS bulan, a.finding, a.status AS status1, b.status_pengerjaan AS status_pengerjaan, b.no_wo, c.status AS status2, a.id_area AS id_area 
             FROM tr_temuan_h a 
@@ -593,12 +593,12 @@ exports.totalfeeding = async (req, res) => {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json({
-            get  
+            get
         });
     }
     catch (error) {
         return res.status(500).json({ error: error.message })
-    } 
+    }
 };
 
 exports.temuanharian = async (req, res) => {
@@ -799,6 +799,26 @@ exports.totalpartreporting = async (req, res) => {
     let get = []
     try {
         get = await config.connect1.query("SELECT a.no_wo,a.desc_part,a.qty,a.qty_install,a.prosentase FROM componen_order a WHERE a.no_wo = '" + no_wo + "'", {
+            type: Sequelize.QueryTypes.SELECT
+        });
+        return res.status(200).json(
+            get
+        );
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+
+};
+
+exports.krm = async (req, res) => {
+    try {
+        get = await config.connect1.query(`SELECT o.no_wo AS no_wo, o.desc, o.actual_end AS tanggal_perbaikan, o.id_area, a.area, o.id_section, s.section,
+        o.note_executor AS proses_perbaikan, o.executor AS executor, o.foto AS foto      
+      FROM mst_order o                                                                   
+      JOIN mst_area a ON a.id = o.id_area                                                
+      JOIN mst_section s ON s.id = o.id_section                                          
+      WHERE o.actual_end IS NOT NULL AND o.Teco = 'Done' ORDER BY tanggal_perbaikan DESC`, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(

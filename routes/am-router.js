@@ -48,5 +48,6 @@ router.post('/totalapprovalspv', amDashboardController.totalapprovalspv);
 router.post('/totalapprovalreadyexecution', amDashboardController.totalapprovalreadyexecution);
 router.post('/reportingharianam',amDashboardController.reportingharianam);
 router.post('/totalpartreporting',amDashboardController.totalpartreporting);
+router.get('/krmreport',amDashboardController.krm);
 
 module.exports = router;
