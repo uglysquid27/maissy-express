@@ -813,12 +813,51 @@ exports.totalpartreporting = async (req, res) => {
 
 exports.krm = async (req, res) => {
     try {
-        get = await config.connect1.query(`SELECT o.no_wo AS no_wo, o.desc, o.actual_end AS tanggal_perbaikan, o.id_area, a.area, o.id_section, s.section,
-        o.note_executor AS proses_perbaikan, o.executor AS executor, o.foto AS foto      
-      FROM mst_order o                                                                   
-      JOIN mst_area a ON a.id = o.id_area                                                
-      JOIN mst_section s ON s.id = o.id_section                                          
-      WHERE o.actual_end IS NOT NULL AND o.Teco = 'Done' ORDER BY tanggal_perbaikan DESC`, {
+        get = await config.connect1.query(`    SELECT
+        o.id,
+        o.no_wo AS no_wo,
+        o.desc,
+        o.actual_start,
+        o.actual_end AS tanggal_perbaikan,
+        o.id_area,
+        a.area,
+        o.id_section,
+        s.section,
+        o.note_executor AS proses_perbaikan,
+        o.executor AS executor,
+        o.note_executor,
+        e.employee_name,
+        o.foto AS foto,
+        MAX(c.kode_part) AS kode_part,
+        MAX(wo.func_loc) AS func_loc,
+        i.PLTXT AS machine
+    FROM
+        sms.mst_order o
+    JOIN sms.mst_area a ON a.id = o.id_area
+    JOIN sms.mst_section s ON s.id = o.id_section
+    JOIN sms.componen_order c ON c.no_wo = o.no_wo
+    JOIN sms.tr_wo_sap wo ON wo.order = o.no_wo
+    JOIN sap_master.iflotx i ON i.TPLNR = wo.func_loc 
+    JOIN aio_employee.employee_data e ON o.executor = e.nik
+    WHERE
+        o.actual_end IS NOT NULL
+        AND o.Teco = 'Done'
+    GROUP BY
+        o.id,
+        o.no_wo,
+        o.desc,
+        o.actual_start,
+        o.actual_end,
+        o.id_area,
+        a.area,
+        o.id_section,
+        s.section,
+        o.note_executor,
+        e.employee_name,
+        o.foto
+    ORDER BY
+        tanggal_perbaikan DESC;
+    `, {
             type: Sequelize.QueryTypes.SELECT
         });
         return res.status(200).json(
