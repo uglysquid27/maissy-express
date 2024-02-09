@@ -813,8 +813,8 @@ exports.totalpartreporting = async (req, res) => {
 
 exports.krm = async (req, res) => {
     try {
-        get = await config.connect1.query(`    SELECT
-        o.id,
+        get = await config.connect1.query(`SELECT
+        o.id AS id_data,
         o.no_wo AS no_wo,
         o.desc,
         o.actual_start,
@@ -830,13 +830,17 @@ exports.krm = async (req, res) => {
         o.foto AS foto,
         MAX(c.kode_part) AS kode_part,
         MAX(wo.func_loc) AS func_loc,
-        i.PLTXT AS machine
+        i.PLTXT AS machine,
+        k.kategori,
+        k.id
     FROM
         sms.mst_order o
     JOIN sms.mst_area a ON a.id = o.id_area
     JOIN sms.mst_section s ON s.id = o.id_section
     JOIN sms.componen_order c ON c.no_wo = o.no_wo
     JOIN sms.tr_wo_sap wo ON wo.order = o.no_wo
+    JOIN sms.tr_temuan_h h ON h.id = o.id_temuan
+    JOIN sms.mst_kategori k ON k.id = h.kategori
     JOIN sap_master.iflotx i ON i.TPLNR = wo.func_loc 
     JOIN aio_employee.employee_data e ON o.executor = e.nik
     WHERE
